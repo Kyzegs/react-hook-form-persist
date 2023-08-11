@@ -32,7 +32,7 @@ const Form = ({ config = {}, props = {} }: { config?: Partial<FormPersistConfig>
     );
 };
 
-describe('react-hook-form-persistence', () => {
+describe('react-hook-form-persistant', () => {
     test('should persist fields in storage', async () => {
         const spy = vi.spyOn(Storage.prototype, 'setItem');
 

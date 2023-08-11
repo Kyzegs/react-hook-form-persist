@@ -1,16 +1,16 @@
 
-# react-hook-form-persistence
-[![package version](https://img.shields.io/npm/v/react-hook-form-persistence.svg?style=flat-square)](https://npmjs.org/package/react-hook-form-persistence)
-[![package downloads](https://img.shields.io/npm/dm/react-hook-form-persistence.svg?style=flat-square)](https://npmjs.org/package/react-hook-form-persistence)
+# react-hook-form-persistant
+[![package version](https://img.shields.io/npm/v/react-hook-form-persistant.svg?style=flat-square)](https://npmjs.org/package/react-hook-form-persistant)
+[![package downloads](https://img.shields.io/npm/dm/react-hook-form-persistant.svg?style=flat-square)](https://npmjs.org/package/react-hook-form-persistant)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-[![package license](https://img.shields.io/npm/l/react-hook-form-persistence.svg?style=flat-square)](https://npmjs.org/package/react-hook-form-persistence)
+[![package license](https://img.shields.io/npm/l/react-hook-form-persistant.svg?style=flat-square)](https://npmjs.org/package/react-hook-form-persistant)
 [![make a pull request](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 Persist and populate [react-hook-form](https://react-hook-form.com/) form using storage of your choice
 
 ## 📖 Table of Contents
 
-- [react-hook-form-persistence](#react-hook-form-persistence)
+- [react-hook-form-persistant](#react-hook-form-persistant)
   - [📖 Table of Contents](#-table-of-contents)
   - [⚙️ Install](#️-install)
   - [📖 Usage](#-usage)
@@ -25,17 +25,17 @@ Install the package locally within you project folder with your package manager:
 
 With `npm`:
 ```sh
-npm install react-hook-form-persistence
+npm install react-hook-form-persistant
 ```
 
 With `yarn`:
 ```sh
-yarn add react-hook-form-persistence
+yarn add react-hook-form-persistant
 ```
 
 With `pnpm`:
 ```sh
-pnpm add react-hook-form-persistence
+pnpm add react-hook-form-persistant
 ```
 
 ## 📖 Usage
@@ -45,7 +45,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { useForm } from "react-hook-form";
 
-import useFormPersist from 'react-hook-form-persistence'
+import useFormPersist from 'react-hook-form-persistant'
 
 function App() {
   const { register, handleSubmit, watch, errors, setValue } = useForm();
@@ -112,7 +112,7 @@ useFormPersist('form', {watch, setValue, include: ['email'] });
 
 ## 📚 API
 
-For all configuration options, please see the [API docs](https://paka.dev/npm/react-hook-form-persistence).
+For all configuration options, please see the [API docs](https://paka.dev/npm/react-hook-form-persistant).
 
 ## 💬 Contributing
 
