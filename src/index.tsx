@@ -75,12 +75,7 @@ const useFormPersist = <TFieldValues extends FieldValues = FieldValues>(
                 onDataRestored(dataRestored);
             }
         }
-    }, [
-        storage,
-        name,
-        onDataRestored,
-        setValue,
-    ]);
+    }, [storage, name, onDataRestored, setValue]);
 
     useEffect(() => {
         const values = R.omit(watchedValues, exclude);
