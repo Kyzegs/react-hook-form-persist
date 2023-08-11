@@ -1,10 +1,10 @@
 import React from 'react';
 import { describe, expect, test, vi } from 'vitest';
 import { render, renderHook, screen } from '@testing-library/react';
-import { type FieldValues, useForm, type UseFormHandleSubmit } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
+import { type UseFormProps } from 'react-hook-form/dist/types';
 import userEvent from '@testing-library/user-event';
 import useFormPersist, { type FormPersistConfig } from '../src';
-import { type UseFormProps } from 'react-hook-form/dist/types';
 
 const STORAGE_KEY = 'STORAGE_KEY';
 
