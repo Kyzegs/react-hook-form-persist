@@ -43,6 +43,7 @@ module.exports = {
     ],
     rules: {
         indent: ['error', 4],
+        'capitalized-comments': 'off',
         'object-curly-spacing': ['error', 'always'],
     },
 };

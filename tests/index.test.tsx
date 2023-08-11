@@ -1,19 +1,20 @@
 import React from 'react';
 import { describe, expect, test, vi } from 'vitest';
 import { render, renderHook, screen } from '@testing-library/react';
-import { useForm, type UseFormHandleSubmit } from 'react-hook-form';
+import { type FieldValues, useForm, type UseFormHandleSubmit } from 'react-hook-form';
 import userEvent from '@testing-library/user-event';
 import useFormPersist, { type FormPersistConfig } from '../src';
+import { type UseFormProps } from 'react-hook-form/dist/types';
 
 const STORAGE_KEY = 'STORAGE_KEY';
 
-const Form = ({ onSubmit = () => {}, config = {} }: { onSubmit?: UseFormHandleSubmit<any>; config?: Omit<FormPersistConfig, 'watch' | 'setValue'> }) => {
-    const { register, handleSubmit, watch, setValue } = useForm();
+const Form = ({ config = {}, props = {} }: { config?: Partial<FormPersistConfig>; props?: UseFormProps }) => {
+    const { register, watch, setValue } = useForm(props);
 
     useFormPersist(STORAGE_KEY, { watch, setValue, ...config });
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form>
             <label>
                  foo:
                 <input id='foo' {...register('foo')} />
@@ -103,26 +104,48 @@ describe('react-hook-form-persist', () => {
     });
 
     test('should not set value if diff is equal', async () => {
-        const { result } = renderHook(() => useForm({ defaultValues: { foo: 'bar' } }));
-
-        const spy = vi.spyOn(result.current, 'setValue');
+        const setValue = vi.fn(() => {});
 
         window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ foo: 'bar' }));
 
-        renderHook(() => useFormPersist(STORAGE_KEY, { watch: result.current.watch, setValue: result.current.setValue }));
+        render(<Form config={{ setValue }} props={{ defaultValues: { foo: 'bar' } }} />);
 
-        expect(spy).toHaveBeenCalledTimes(0);
+        expect(setValue).toHaveBeenCalledTimes(0);
     });
 
     test('should set value if diff is different', async () => {
-        const { result } = renderHook(() => useForm({ defaultValues: { foo: 'baz' } }));
+        const setValue = vi.fn(() => {});
 
-        const spy = vi.spyOn(result.current, 'setValue');
+        window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ foo: 'baz' }));
+
+        render(<Form config={{ setValue }} props={{ defaultValues: { foo: 'bar' } }} />);
+
+        expect(setValue).toHaveBeenCalledOnce();
+    });
+
+    test('should call onDataRestored callback', async () => {
+        const onDataRestored = vi.fn(() => {});
 
         window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ foo: 'bar' }));
 
-        renderHook(() => useFormPersist(STORAGE_KEY, { watch: result.current.watch, setValue: result.current.setValue }));
+        render(<Form config={{ onDataRestored }} />);
 
-        expect(spy).toHaveBeenCalledTimes(1);
+        expect(onDataRestored).toHaveBeenCalledOnce();
+        expect(onDataRestored).toHaveBeenCalledWith({ foo: 'bar' });
+    });
+
+    test('should clear storage', async () => {
+        window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ foo: 'baz' }));
+
+        const { result: formResult } = renderHook(() => useForm());
+        const { result: formPersistResult } = renderHook(() => useFormPersist(STORAGE_KEY, {
+            watch: formResult.current.watch,
+            setValue: formResult.current.setValue,
+
+        }));
+
+        formPersistResult.current.clear();
+
+        expect(window.sessionStorage.getItem(STORAGE_KEY)).toBeNull();
     });
 });

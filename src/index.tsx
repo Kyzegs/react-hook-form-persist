@@ -8,7 +8,7 @@ import {
     type UseFormWatch,
 } from 'react-hook-form';
 
-export type FormPersistConfig<TFieldValues extends FieldValues = any> = {
+export type FormPersistConfig<TFieldValues extends FieldValues = FieldValues> = {
     storage?: Storage;
     watch: UseFormWatch<TFieldValues>;
     setValue: SetFieldValue<TFieldValues>;
