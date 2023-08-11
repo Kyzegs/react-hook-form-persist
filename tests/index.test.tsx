@@ -1,6 +1,6 @@
 import React from 'react'
 import { vi, describe, test, expect, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import {render, renderHook, screen} from '@testing-library/react'
 import { useForm } from 'react-hook-form'
 import userEvent from '@testing-library/user-event'
 
@@ -56,7 +56,7 @@ describe('react-hook-form-persist', () => {
   test('should retrieve stored fields', async () => {
     const spy = vi.spyOn(Storage.prototype, 'getItem')
 
-    const { unmount } = render(<Form />)
+    const {  unmount } = render(<Form />)
 
     await userEvent.type(screen.getByLabelText('foo:'), 'foo')
 
@@ -107,5 +107,35 @@ describe('react-hook-form-persist', () => {
     expect(JSON.parse(window.sessionStorage.getItem(STORAGE_KEY) || "{}")).toEqual({})
   })
 
-  // TODO: Add test for re-render
+  test('should not set value if diff is equal', async () => {
+    const {result} = renderHook(() => {
+      return useForm({defaultValues: {foo: 'bar'}})
+    })
+
+    const spy = vi.spyOn(result.current, 'setValue');
+
+    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({foo: 'bar'}))
+
+    renderHook(() => {
+      return useFormPersist(STORAGE_KEY, { watch: result.current.watch, setValue: result.current.setValue })
+    });
+
+    expect(spy).toHaveBeenCalledTimes(0)
+  })
+
+  test('should set value if diff is different', async () => {
+    const {result} = renderHook(() => {
+      return useForm({defaultValues: {foo: 'baz'}})
+    })
+
+    const spy = vi.spyOn(result.current, 'setValue');
+
+    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({foo: 'bar'}))
+
+    renderHook(() => {
+      return useFormPersist(STORAGE_KEY, { watch: result.current.watch, setValue: result.current.setValue })
+    });
+
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
 })
