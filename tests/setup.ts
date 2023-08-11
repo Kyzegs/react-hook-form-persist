@@ -5,9 +5,9 @@ import matchers from '@testing-library/jest-dom/matchers';
 expect.extend(matchers);
 
 beforeEach(() => {
-	window.sessionStorage.clear();
+    window.sessionStorage.clear();
 });
 
 afterEach(() => {
-	cleanup();
+    cleanup();
 });
