@@ -12,7 +12,6 @@ beforeEach(() => {
   window.sessionStorage.clear()
 })
 
-
 const Form = ({ onSubmit = () => { }, config = {} }: { onSubmit?: any, config?: Omit<FormPersistConfig, 'watch' | 'setValue'> }) => {
   const { register, handleSubmit, watch, setValue } = useForm()
 
@@ -108,4 +107,5 @@ describe('react-hook-form-persist', () => {
     expect(JSON.parse(window.sessionStorage.getItem(STORAGE_KEY) || "{}")).toEqual({})
   })
 
+  // TODO: Add test for re-render
 })
