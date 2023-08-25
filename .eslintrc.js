@@ -17,6 +17,7 @@ module.exports = {
                 '*.tsx',
             ],
             rules: {
+                '@typescript-eslint/ban-ts-comment': 'off',
                 '@typescript-eslint/ban-types': ['error', {
                     types: {
                         null: false,

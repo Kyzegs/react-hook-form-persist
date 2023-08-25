@@ -27,6 +27,10 @@ const Form = ({ config = {}, props = {} }: { config?: Partial<FormPersistConfig>
                  baz:
                 <input id='baz' {...register('baz')} />
             </label>
+            <label>
+                qux:
+                <input id='qux' {...register('qux.quux')} />
+            </label>
             <button type='submit'>submit</button>
         </form>
     );
@@ -46,6 +50,9 @@ describe('react-hook-form-persistant', () => {
             foo: 'foo',
             bar: '',
             baz: '',
+            qux: {
+                quux: '',
+            },
         });
     });
 
@@ -64,11 +71,12 @@ describe('react-hook-form-persistant', () => {
     });
 
     test('should not persist excluded fields', async () => {
-        render(<Form config={{ exclude: ['baz', 'foo'] }} />);
+        render(<Form config={{ exclude: ['baz', 'foo', 'qux.quux'] }} />);
 
         await userEvent.type(screen.getByLabelText('foo:'), 'foo');
         await userEvent.type(screen.getByLabelText('bar:'), 'bar');
         await userEvent.type(screen.getByLabelText('baz:'), 'baz');
+        await userEvent.type(screen.getByLabelText('qux:'), 'qux');
 
         expect(JSON.parse(window.sessionStorage.getItem(STORAGE_KEY) ?? '{}')).toEqual({
             bar: 'bar',
@@ -84,12 +92,16 @@ describe('react-hook-form-persistant', () => {
         await userEvent.type(screen.getByLabelText('foo:'), 'foo');
         await userEvent.type(screen.getByLabelText('bar:'), 'bar');
         await userEvent.type(screen.getByLabelText('baz:'), 'baz');
+        await userEvent.type(screen.getByLabelText('qux:'), 'qux');
 
         expect(spy).toBeCalled();
         expect(JSON.parse(window.sessionStorage.getItem(STORAGE_KEY) ?? '{}')).toEqual({
             bar: 'bar',
             baz: 'baz',
             foo: 'foo',
+            qux: {
+                quux: 'qux',
+            },
             _timestamp: now,
         });
 
@@ -106,9 +118,22 @@ describe('react-hook-form-persistant', () => {
     test('should not set value if diff is equal', async () => {
         const setValue = vi.fn(() => {});
 
-        window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ foo: 'bar' }));
+        window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+            foo: 'bar',
+            qux: { quux: 'qux' },
+        }));
 
-        render(<Form config={{ setValue }} props={{ defaultValues: { foo: 'bar' } }} />);
+        render(
+            <Form
+                config={{ setValue }}
+                props={{
+                    defaultValues: {
+                        foo: 'bar',
+                        qux: { quux: 'qux' },
+                    },
+                }}
+            />,
+        );
 
         expect(setValue).toHaveBeenCalledTimes(0);
     });
@@ -126,12 +151,15 @@ describe('react-hook-form-persistant', () => {
     test('should call onDataRestored callback', async () => {
         const onDataRestored = vi.fn(() => {});
 
-        window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ foo: 'bar' }));
+        window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+            foo: 'bar',
+            qux: { quux: 'qux' },
+        }));
 
         render(<Form config={{ onDataRestored }} />);
 
         expect(onDataRestored).toHaveBeenCalledOnce();
-        expect(onDataRestored).toHaveBeenCalledWith({ foo: 'bar' });
+        expect(onDataRestored).toHaveBeenCalledWith({ foo: 'bar', qux: { quux: 'qux' } });
     });
 
     test('should clear storage', async () => {
@@ -141,7 +169,6 @@ describe('react-hook-form-persistant', () => {
         const { result: formPersistResult } = renderHook(() => useFormPersist(STORAGE_KEY, {
             watch: formResult.current.watch,
             setValue: formResult.current.setValue,
-
         }));
 
         formPersistResult.current.clear();
