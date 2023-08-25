@@ -2,9 +2,9 @@
 import { useEffect } from 'react';
 import * as R from 'remeda';
 import {
+    type FieldValue,
     type FieldValues,
     type SetFieldValue,
-    type UnpackNestedValue,
     type UseFormWatch,
 } from 'react-hook-form';
 
@@ -12,7 +12,7 @@ export type FormPersistConfig<TFieldValues extends FieldValues = FieldValues> = 
     storage?: Storage;
     watch: UseFormWatch<TFieldValues>;
     setValue: SetFieldValue<TFieldValues>;
-    exclude?: Array<keyof UnpackNestedValue<TFieldValues>>;
+    exclude?: Array<FieldValue<TFieldValues>>;
     onDataRestored?: (data: any) => void;
     validate?: boolean;
     dirty?: boolean;
